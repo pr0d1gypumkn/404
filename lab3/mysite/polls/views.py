@@ -23,9 +23,13 @@ def update_question(request, pk):
     """
     questions = Question.objects.get(id=pk)
     serializer = QuestionSerializer(questions, data=request.data, partial=True)
-    if serializer.is_valid():
+    status = serializer.is_valid()
+    
+    if status:
+        serializer.update(questions, serializer.validated_data)
         return Response(serializer.data)
-    return Response(status=400, data=serializer.errors)
+    else: 
+        return Response(status=400, data=serializer.errors)
 
 
 class IndexView(generic.ListView):
